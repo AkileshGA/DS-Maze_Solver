@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maze Solver</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: url(v3-img.png) no-repeat center center;
+            background-size: cover;
+            flex-direction: column;
+        }
+        h2 {
+            font-family: 'Segoe UI';
+            text-align: center;
+            font-size: 35px;
+            color: white;
+            margin-top: 0;
+            margin-bottom: 100px;
+        }
+        canvas {
+            border: 5px solid white;
+            border-radius: 25px;
+        }
+    </style>
+</head>
+<body>
+    <h2>MAZE SOLVER<br>BACKTRACKING VISUALIZATION</h2>
+    <script>
+        let maze = [
+            [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1],
+            [1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 1, 0, 1, 0, 1],
+            [1, 1, 0, 1, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1],
+            [1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1],
+            [1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1],
+            [1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1],
+            [1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1],
+            [1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1],
+            [1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1],
+            [1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+            [1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1],
+            [1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 2],
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+        ];
+
+        let palette = ["#FFFFFF", "#000000", "#00ff00", "#0000ff", "#AAAAAA", "#0000ff"];
+        let boxSize = 25;
+        let delay = 100;
+
+        function setup() {
+            createCanvas(maze[0].length * boxSize, maze.length * boxSize);
+            noLoop();
+            drawMaze();
+            exploreMaze(0, 1);
+        }
+
+        function drawMaze() {
+            background(255);
+            for (let i = 0; i < maze.length; i++) {
+                for (let j = 0; j < maze[i].length; j++) {
+                    fill(palette[maze[i][j]]);
+                    rect(j * boxSize, i * boxSize, boxSize, boxSize);
+                }
+            }
+        }
+
+        function exploreMaze(row, col) {
+            setTimeout(() => {
+                if (maze[row][col] == 2) {
+                    fill(0);
+                    alert("Maze Solved", 10, 230);
+                } else if (maze[row][col] == 0) {
+                    maze[row][col] = 5;
+                    drawMaze();
+                    redraw();
+                    if (row < maze.length - 1 && exploreMaze(row + 1, col)) {
+                        return true;
+                    }
+                    if (row > 0 && exploreMaze(row - 1, col)) {
+                        return true;
+                    }
+                    if (col < maze[row].length - 1 && exploreMaze(row, col + 1)) {
+                        return true;
+                    }
+                    if (col > 0 && exploreMaze(row, col - 1)) {
+                        return true;
+                    }
+                    maze[row][col] = 4;
+                    drawMaze();
+                    redraw();
+                }
+            }, delay);
+        }
+    </script>
+</body>
+</html>
